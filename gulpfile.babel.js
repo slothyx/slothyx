@@ -6,23 +6,8 @@ import gulp from "gulp";
 /* Utility */
 import del from "del";
 import sequence from "gulp-sequence";
-/* Sass */
-import scss from "gulp-sass";
-import sourcemaps from "gulp-sourcemaps";
-/* Images */
-/* JS */
-
-/* Transpile scss to css */
-gulp.task('scss', () => {
-    const src = `${CONFIG.src}/scss/main.scss`;
-    const dist = `${CONFIG.dist}/scss/`;
-
-    gulp.src(src)
-        .pipe(sourcemaps.init())
-        .pipe(scss({outputStyle: 'compressed'}))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(dist))
-});
+import requireDir from "require-dir";
+requireDir('./gulp/tasks');
 
 gulp.task('clean', () => {
     return del(`${CONFIG.dist}/**`, {force: true});
