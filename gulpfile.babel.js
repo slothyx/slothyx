@@ -29,7 +29,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('watch', () => {
-    const scss = `${CONFIG.src}/scss/**/*`;
+    const scss = `${CONFIG.src}/scss/**/*.scss`;
 
     gulp.watch(scss, ['scss']);
 });

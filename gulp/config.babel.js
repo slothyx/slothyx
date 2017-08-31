@@ -1,6 +1,6 @@
 const CONFIG = {
     src: './app/src',
-    dest: './app/dist/'
+    dist: './app/dist'
 };
 
 export default Object.freeze(CONFIG);
