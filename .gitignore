@@ -1,0 +1,16 @@
+# system
+.DS_Store
+
+# IDE
+.idea/
+.idea/vcs.xml'
+
+# Log
+*.log
+
+# node.js
+node_modules/
+npm-debug.log
+
+# build
+app/dist
