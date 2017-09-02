@@ -3,6 +3,7 @@
 
 # IDE
 .idea/
+*.iml
 
 # Log
 *.log
@@ -12,4 +13,5 @@ node_modules/
 npm-debug.log
 
 # build
-dist/
+frontend/app/dist/
+backend/target/
