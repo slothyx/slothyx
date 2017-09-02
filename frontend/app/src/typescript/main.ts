@@ -7,5 +7,5 @@ function showHello(divName: string, name: string) {
     console.log("hi2");
 }
 
-showHello("greeting", "Matthias");
+showHello("greeting", "Patrick!");
 

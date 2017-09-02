@@ -6,6 +6,6 @@ deploy:
   provider: script
   script: build-scripts/deploy.sh
   on:
-    branch: test
+    branch: master
 notifications:
   email: false
