@@ -8,5 +8,10 @@ gulp.task('clean', () => {
 
 gulp.task('watch', () => {
     const scss = `${CONFIG.src}/scss/**/*.scss`;
+    const html = `${CONFIG.src}/html/**/*.html`;
+    const typescript = `${CONFIG.src}/typescript/**/*.ts`;
+
     gulp.watch(scss, ['scss']);
+    gulp.watch(html, ['html']);
+    gulp.watch(typescript, ['typescript']);
 });
