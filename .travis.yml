@@ -1,0 +1,5 @@
+language: java
+install: build-scripts/install.sh
+script: build-scripts/build.sh
+notifications:
+  email: false
