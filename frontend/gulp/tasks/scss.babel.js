@@ -5,7 +5,7 @@ import gulp from "gulp";
 
 gulp.task('scss', () => {
     const src = `${CONFIG.src}/scss/main.scss`;
-    const dist = `${CONFIG.dist}/scss/`;
+    const dist = `${CONFIG.dist}/css/`;
 
     gulp.src(src)
         .pipe(sourcemaps.init())

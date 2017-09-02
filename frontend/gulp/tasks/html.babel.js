@@ -4,7 +4,7 @@ import htmlmin from "gulp-htmlmin";
 
 gulp.task("html", function () {
     const src = `${CONFIG.src}/html/**/*.html`;
-    const dist = `${CONFIG.dist}/html/`;
+    const dist = `${CONFIG.dist}`;
 
     return gulp.src(src)
         .pipe(htmlmin({collapseWhitespace: true}))
