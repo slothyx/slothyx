@@ -3,7 +3,6 @@
 
 # IDE
 .idea/
-.idea/vcs.xml'
 
 # Log
 *.log
@@ -13,4 +12,4 @@ node_modules/
 npm-debug.log
 
 # build
-app/dist
+app/dist/
