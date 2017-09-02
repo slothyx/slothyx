@@ -1,5 +1,9 @@
-function greeter(person: string) {
-    return `Hello ${person}`;
+import {greetPerson} from "./utility/greeter";
+
+function showHello(divName: string, name: string) {
+    const el = document.getElementById(divName);
+    el.innerText = greetPerson(name);
 }
 
-console.log(greeter('Matthias'));
+showHello("greeting", "Matthias");
+
