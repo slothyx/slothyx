@@ -5,7 +5,7 @@ By *Matthias Ableidinger* and *Patrick Obermüller*
 use ```npm install```  
 
 #### Production
-use ```npm gulp-build``` for production  
+use ```npm run gulp-build``` for production  
 
 #### Development
-use ```npm gulp-dev``` for development
+use ```npm run gulp-dev``` for development
