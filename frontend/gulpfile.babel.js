@@ -4,4 +4,5 @@ import getTasks from "require-dir";
 
 getTasks('./gulp/tasks');
 
-gulp.task('default', sequence(['clean'], ['html'], ['scss', 'assets', 'typescript'], ['watch']));
+gulp.task('dev', sequence(['clean'], ['html'], ['scss', 'assets', 'typescript'], ['watch']));
+gulp.task('prod', sequence(['clean'], ['html'], ['scss', 'assets', 'typescript']));
