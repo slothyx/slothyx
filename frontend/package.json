@@ -4,7 +4,9 @@
   "description": "An Audio Visualizer for fancy people.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gulp-build": "gulp prod",
+    "gulp-dev": "gulp dev"
   },
   "repository": {
     "type": "git",
