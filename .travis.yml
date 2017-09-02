@@ -1,5 +1,11 @@
 language: java
 install: build-scripts/install.sh
 script: build-scripts/build.sh
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: build-scripts/deploy.sh
+  on:
+    branch: test
 notifications:
   email: false
