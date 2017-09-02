@@ -1,10 +1,8 @@
 {
   "name": "slothyx",
   "version": "1.0.0",
-  "description": "An Audio Visualizer for fancy people.",
-  "main": "index.js",
+  "description": "A WebVR Audio Visualizer incl. Party-Mode using the Spotify Web API.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "gulp-build": "gulp prod",
     "gulp-dev": "gulp dev"
   },

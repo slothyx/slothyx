@@ -12,7 +12,7 @@ gulp.task('typescript', function () {
     const dist = `${CONFIG.dist}/typescript/`;
 
     return browserify({
-        debug: true, // allow sourcemaps
+        debug: true,
         entries: [src],
     })
         .plugin(tsify)
