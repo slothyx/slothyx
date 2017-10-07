@@ -1,4 +1,6 @@
 language: java
+services:
+  - docker
 install: build-scripts/install.sh
 script: build-scripts/build.sh
 deploy:

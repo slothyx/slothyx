@@ -9,5 +9,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
+	<build>
+		<finalName>slothyx</finalName>
+	</build>
 
 </project>
