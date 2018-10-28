@@ -1,21 +1,19 @@
 package com.slothyx.controller;
 
+import com.slothyx.spotify.SpotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloWorldController {
 
-    private String message;
-
     @Autowired
-    public HelloWorldController(String message) {
-        this.message = message;
-    }
+    SpotifyService spotifyService;
 
-    @RequestMapping("/hello")
-    String home() {
-        return message;
+    @GetMapping("/hello")
+    String home(@RequestParam String q) {
+        return spotifyService.searchAlbums(q);
     }
 }

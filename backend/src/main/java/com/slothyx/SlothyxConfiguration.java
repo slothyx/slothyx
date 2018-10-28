@@ -2,17 +2,11 @@ package com.slothyx;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class Configuration {
+public class SlothyxConfiguration {
 
     public static void main(String[] args) {
-        SpringApplication.run(Configuration.class, args);
-    }
-
-    @Bean
-    String message() {
-        return "Hello World!";
+        SpringApplication.run(SlothyxConfiguration.class, args);
     }
 }
