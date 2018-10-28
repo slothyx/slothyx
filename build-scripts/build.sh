@@ -6,8 +6,8 @@ cd frontend
 npm run build
 
 cd ..
-mkdir -p backend/src/main/webapp/
-cp -r frontend/app/dist/* backend/src/main/webapp/
+mkdir -p backend/src/main/resources/static/
+cp -r frontend/app/dist/* backend/src/main/resources/static/
 
 cd backend
 mvn package
