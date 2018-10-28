@@ -3,7 +3,7 @@
 set -e
 
 cd frontend
-npm run gulp-build
+npm run build
 
 cd ..
 cp -r frontend/app/dist/* backend/src/main/webapp/
