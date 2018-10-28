@@ -1,4 +1,8 @@
-FROM tomcat:9
+FROM openjdk:8
 
-RUN ["rm","-rf","/usr/local/tomcat/webapps/"]
-COPY backend/target/slothyx.war /usr/local/tomcat/webapps/ROOT.war
+WORKDIR /app
+EXPOSE 8080
+
+CMD ["java", "-jar", "slothyx.jar"]
+
+COPY backend/target/slothyx.jar /app/slothyx.jar
