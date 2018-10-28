@@ -6,6 +6,7 @@ cd frontend
 npm run build
 
 cd ..
+mkdir -p backend/src/main/webapp/
 cp -r frontend/app/dist/* backend/src/main/webapp/
 
 cd backend
