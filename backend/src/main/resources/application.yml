@@ -1,0 +1,11 @@
+logging:
+  level:
+    org:
+      apache:
+        http:
+          wire:
+            DEBUG
+server:
+  servlet:
+    session:
+      tracking-modes: cookie

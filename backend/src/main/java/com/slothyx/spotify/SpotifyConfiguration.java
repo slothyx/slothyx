@@ -30,4 +30,13 @@ public class SpotifyConfiguration {
         }
         return secret;
     }
+
+    @Bean
+    String loginRedirectUrl() {
+        String secret = System.getenv("login_redirect_url");
+        if (secret == null || secret.isEmpty()) {
+            throw new RuntimeException("need login_redirect_url in env!");
+        }
+        return secret;
+    }
 }
