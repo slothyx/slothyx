@@ -86,7 +86,7 @@ public class SpotifyService {
                         new BasicNameValuePair("response_type", "code"),
                         new BasicNameValuePair("redirect_uri", loginRedirectUrl),
                         new BasicNameValuePair("client_id", oauthClientId),
-                        new BasicNameValuePair("scope", "streaming user-modify-playback-state") //TODO not needed? user-read-birthdate user-read-email user-read-private")
+                        new BasicNameValuePair("scope", "streaming user-modify-playback-state user-read-birthdate user-read-email user-read-private") //TODO check if all really needed
                         //TODO new BasicNameValuePair("state", ""),
                 ), Charsets.UTF_8);
     }
