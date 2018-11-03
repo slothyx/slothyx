@@ -25,7 +25,9 @@ public class SpotifyController {
         if (error != null) {
             throw new RuntimeException("failure logging in: " + error);
         }
-        return new RedirectView(spotifyService.loginCurrentUser(code));
+        //TODO exception handling
+        spotifyService.loginCurrentUser(code);
+        return new RedirectView("/test.html");
     }
 
     @GetMapping(value = "/search", produces = "application/json")

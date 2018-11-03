@@ -1,16 +1,14 @@
 package com.slothyx.spotify;
 
 
+import com.slothyx.spotify.util.HttpUriRequestComparer;
 import org.apache.commons.codec.Charsets;
-import org.apache.http.Header;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.apache.http.util.EntityUtils;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -23,16 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.Base64;
 
 import static org.apache.http.HttpVersion.HTTP_1_1;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 
@@ -74,21 +70,28 @@ public class SpotifyServiceTest {
     }
 
     @Test
-    void testGetLoginRedirectUrl() throws MalformedURLException {
+    void testGetLoginRedirectUrl() throws URISyntaxException {
         String urlString = service.getLoginRedirectUrl();
-        URL url = new URL(urlString);
-        assertEquals(url.getProtocol(), "https");
-        assertEquals(url.getHost(), "accounts.spotify.com");
-        assertEquals(url.getPath(), "/authorize");
-        String query = url.getQuery();
-        assertTrue(query.contains("response_type=code"));
-        assertTrue(query.contains("redirect_uri=http%3A%2F%2Flocahost%3A8080%2Flogin"));
-        assertTrue(query.contains("client_id=" + OAUTH_CLIENT_ID));
-        assertTrue(query.contains("scope=streaming+user-modify-playback-state+user-read-birthdate+user-read-email+user-read-private"));
+        assertTrue(new HttpUriRequestComparer(new URI(urlString))
+                .scheme("https")
+                .host("accounts.spotify.com")
+                .path("/authorize")
+                .queryContains("response_type=code")
+                .queryContains("redirect_uri=" + LOGIN_REDIRECT_URL)
+                .queryContains("client_id=" + OAUTH_CLIENT_ID)
+                .queryContains("scope=streaming+user-modify-playback-state+user-read-birthdate+user-read-email+user-read-private")
+                .matches());
+    }
+
+    @Test(expectedExceptions = AuthErrorExcpetion.class)
+    void testLoginFlowWithCodeTokenError() throws IOException {
+        when(httpClient.execute(argThat(createAuthMatcher()))).thenReturn(createErrorAuthResponse());
+
+        service.loginCurrentUser(CODE);
     }
 
     @Test
-    void testLoginFlowWithCodeToken() throws IOException {
+    void testLoginFlowWithCodeTokenSuccess() throws IOException {
         when(httpClient.execute(argThat(createAuthMatcher()))).thenReturn(createSuccessAuthResponse());
 
         service.loginCurrentUser(CODE);
@@ -98,28 +101,16 @@ public class SpotifyServiceTest {
     }
 
     private ArgumentMatcher<HttpUriRequest> createAuthMatcher() {
-        return request -> {
-            assertEquals(request.getMethod(), "POST");
-            URI uri = request.getURI();
-            assertEquals(uri.getScheme(), "https");
-            assertEquals(uri.getHost(), "accounts.spotify.com");
-            assertEquals(uri.getPath(), "/api/token");
-            try {
-                assertTrue(request instanceof HttpEntityEnclosingRequest);
-                String body = EntityUtils.toString(((HttpEntityEnclosingRequest) request).getEntity());
-                assertTrue(body.contains("grant_type=authorization_code"));
-                assertTrue(body.contains("code=" + CODE));
-                assertTrue(body.contains("redirect_uri=http%3A%2F%2Flocahost%3A8080%2Flogin"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Header[] authHeaders = request.getHeaders("Authorization");
-            assertEquals(authHeaders.length, 1);
-            assertEquals(authHeaders[0].getElements().length, 1);
-            assertEquals(authHeaders[0].getValue(),
-                    "Basic " + Base64.getEncoder().encodeToString((OAUTH_CLIENT_ID + ":" + OAUTH_CLIENT_SECRET).getBytes(Charsets.UTF_8)));
-            return true;
-        };
+        return request -> new HttpUriRequestComparer(request)
+                .method("POST")
+                .scheme("https")
+                .host("accounts.spotify.com")
+                .path("/api/token")
+                .bodyContains("grant_type=authorization_code")
+                .bodyContains("code=" + CODE)
+                .bodyContains("redirect_uri=http%3A%2F%2Flocahost%3A8080%2Flogin")
+                .containsHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((OAUTH_CLIENT_ID + ":" + OAUTH_CLIENT_SECRET).getBytes(Charsets.UTF_8)))
+                .matches();
     }
 
     private HttpResponse createSuccessAuthResponse() {
@@ -128,5 +119,9 @@ public class SpotifyServiceTest {
                 .setText("{\"access_token\":\"" + ACCESS_TOKEN + "\",\"refresh_token\":\"" + REFRESH_TOKEN + "\"}")
                 .build());
         return response;
+    }
+
+    private HttpResponse createErrorAuthResponse() {
+        return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, 401, "NOT AUTH"));
     }
 }
