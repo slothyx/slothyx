@@ -116,7 +116,7 @@ public class SpotifyService {
         session.setAttribute("refresh_token", response.getString("refresh_token"));
     }
 
-    private void refreshLogin() {
+    void refreshLogin() {
         HttpPost post = new HttpPost("https://accounts.spotify.com/api/token");
         post.addHeader("Authorization",
                 "Basic " + Base64.getEncoder().encodeToString((oauthClientId + ":" + oauthClientSecret).getBytes(Charsets.UTF_8)));
@@ -129,7 +129,12 @@ public class SpotifyService {
             throw new RuntimeException("error encoding url parameters", e);
         }
 
-        JSONObject response = new JSONObject(executeToStringAsIs(post));
+        String responseString = executeToStringAsIs(post);
+        //TODO better valdiation of return code and things
+        if (responseString == null) {
+            throw new AuthErrorExcpetion("could not validate oauth token");
+        }
+        JSONObject response = new JSONObject(responseString);
         HttpSession session = getSession();
         session.setAttribute("access_token", response.getString("access_token"));
     }
