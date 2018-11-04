@@ -1,13 +1,10 @@
 import React from 'react';
 
 import Container from '../../components/container';
-import Header from '../../components/header';
 import GlobalStyle from '../../components/global';
-import LoginArea from '../../components/LoginArea/loginArea';
-import LogoutButton from '../../components/LogoutButton/logoutButton';
-import SearchArea from '../../components/SearchArea/searchArea';
-import Paragraph from '../../components/Paragraph/paragraph';
 import slothyxService from '../../services/slothyxService'
+import LoginComponent from './loginComponent'
+import MainComponent from './mainComponent'
 
 class Home extends React.Component {
     constructor(props) {
@@ -32,28 +29,18 @@ class Home extends React.Component {
     }
 
     render() {
-        if (!this.state.loggedIn) {
-            return (<Container>
-                <Header>Slothyx</Header>
-                <Paragraph></Paragraph>
-                <LoginArea loggedIn={this.loggedIn}/>
+        let content = this.state.loggedIn ?
+            (<MainComponent loggedOut={this.loggedOut}/>) :
+            (<LoginComponent loggedIn={this.loggedIn}/>);
+
+        return (
+            <Container>
+                {content}
                 <GlobalStyle/>
 
-                <div className="stars"></div>
-                <div className="twinkling"></div>
+                <div className="stars"/>
+                <div className="twinkling"/>
             </Container>);
-        } else {
-            return (<Container>
-                <Header>Slothyx</Header>
-                <span>You are logged in!</span>
-                <LogoutButton loggedOut={this.loggedOut}/>
-                <SearchArea/>
-                <GlobalStyle/>
-
-                <div className="stars"></div>
-                <div className="twinkling"></div>
-            </Container>);
-        }
     }
 }
 
