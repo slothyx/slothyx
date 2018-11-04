@@ -26,7 +26,8 @@ import java.util.Base64;
 
 import static org.apache.http.HttpVersion.HTTP_1_1;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 @Test
@@ -41,8 +42,6 @@ public class SpotifyServiceTest {
     private static final String REFRESHED_ACCESS_TOKEN = "refreshedAccessCode";
     private static final String SPOTIFY_SONG_URI = "spotify:song:uri";
     private static final String DEVICE_ID = "deviceId";
-    private static final String SEARCH_REQUEST = "coolSongSearch";
-    private static final String SEARCH_REQUEST_RESPONSE = "cool Song response!";
     private static final String OAUTH_RESPONSE = "{\"access_token\":\"" + ACCESS_TOKEN + "\",\"refresh_token\":\"" + REFRESH_TOKEN + "\"}";
 
     @Mock
@@ -62,11 +61,7 @@ public class SpotifyServiceTest {
     @BeforeMethod
     void setup() {
         MockitoAnnotations.initMocks(this);
-        service = new SpotifyService();
-        service.client = httpClient;
-        service.oauthClientId = OAUTH_CLIENT_ID;
-        service.oauthClientSecret = OAUTH_CLIENT_SECRET;
-        service.loginRedirectUrl = LOGIN_REDIRECT_URL;
+        service = new SpotifyService(httpClient, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, LOGIN_REDIRECT_URL);
 
         when(request.getSession()).thenReturn(session);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request, response));
@@ -134,73 +129,6 @@ public class SpotifyServiceTest {
         verify(httpClient).execute(argThat(createPlaySongMatcher()));
     }
 
-    @Test
-    void testSearchTracks() throws IOException {
-        when(session.getAttribute("access_token")).thenReturn(ACCESS_TOKEN);
-        when(httpClient.execute(argThat(createFirstSearchTracksMatcher()))).thenReturn(createSuccessSearchTrackResponse());
-
-        String result = service.searchTracks(SEARCH_REQUEST);
-        assertEquals(result, SEARCH_REQUEST_RESPONSE);
-
-        verify(httpClient).execute(argThat(createFirstSearchTracksMatcher()));
-    }
-
-    @Test
-    void testSearchTrackWithRetry() throws IOException {
-        when(session.getAttribute("refresh_token")).thenReturn(REFRESH_TOKEN);
-        when(session.getAttribute("access_token")).thenReturn(ACCESS_TOKEN).thenReturn(REFRESHED_ACCESS_TOKEN);
-        doReturn(createNotAuthResponse()).when(httpClient).execute(argThat(createFirstSearchTracksMatcher()));
-        doReturn(createSuccessSearchTrackResponse()).when(httpClient).execute(argThat(createSecondSearchTracksMatcher()));
-        doReturn(createSuccessRefreshResponse()).when(httpClient).execute(argThat(createSafeRefreshMatcher()));
-
-        String result = service.searchTracks(SEARCH_REQUEST);
-        assertEquals(result, SEARCH_REQUEST_RESPONSE);
-
-        verify(session).setAttribute("access_token", REFRESHED_ACCESS_TOKEN);
-    }
-
-    private HttpResponse createSuccessSearchTrackResponse() {
-        BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, 200, "OK"));
-        response.setEntity(EntityBuilder.create()
-                .setText(SEARCH_REQUEST_RESPONSE)
-                .build());
-        return response;
-    }
-
-    private ArgumentMatcher<HttpUriRequest> createFirstSearchTracksMatcher() {
-        return request -> {
-            try {
-                new HttpUriRequestMatcher(request)
-                        .method("GET")
-                        .scheme("https")
-                        .host("api.spotify.com")
-                        .path("/v1/search")
-                        .queryContains("q=" + SEARCH_REQUEST)
-                        .containsHeader("Authorization", getUserAuthheaderValue());
-                return true;
-            } catch (AssertionError e) {
-                return false;
-            }
-        };
-    }
-
-    private ArgumentMatcher<HttpUriRequest> createSecondSearchTracksMatcher() {
-        return request -> {
-            try {
-                new HttpUriRequestMatcher(request)
-                        .method("GET")
-                        .scheme("https")
-                        .host("api.spotify.com")
-                        .path("/v1/search")
-                        .queryContains("q=" + SEARCH_REQUEST)
-                        .containsHeader("Authorization", getRefreshedUserAuthheaderValue());
-                return true;
-            } catch (AssertionError e) {
-                return false;
-            }
-        };
-    }
-
     private ArgumentMatcher<HttpUriRequest> createPlaySongMatcher() {
         return request -> {
             new HttpUriRequestMatcher(request)
@@ -219,10 +147,6 @@ public class SpotifyServiceTest {
         return "Bearer " + ACCESS_TOKEN;
     }
 
-    private String getRefreshedUserAuthheaderValue() {
-        return "Bearer " + REFRESHED_ACCESS_TOKEN;
-    }
-
     private HttpResponse createEmptySuccessResponse() {
         return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, 200, "OK"));
     }
@@ -233,17 +157,6 @@ public class SpotifyServiceTest {
                 .setText("{\"access_token\":\"" + REFRESHED_ACCESS_TOKEN + "\"}")
                 .build());
         return response;
-    }
-
-    private ArgumentMatcher<HttpUriRequest> createSafeRefreshMatcher() {
-        return request -> {
-            try {
-                createRefreshMatcher().matches(request);
-                return true;
-            } catch (AssertionError e) {
-                return false;
-            }
-        };
     }
 
     private ArgumentMatcher<HttpUriRequest> createRefreshMatcher() {

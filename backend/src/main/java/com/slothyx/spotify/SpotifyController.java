@@ -37,11 +37,6 @@ public class SpotifyController {
         return mav;
     }
 
-    @GetMapping(value = "/search", produces = "application/json")
-    String search(@RequestParam("q") String q) {
-        return spotifyService.searchTracks(q);
-    }
-
     @GetMapping("/getAccessToken")
     String getAccessToken() {
         return spotifyService.getAccessToken();

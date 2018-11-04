@@ -4,7 +4,6 @@ import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -33,25 +32,17 @@ public class SpotifyService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpotifyService.class);
 
-    @Autowired
-    HttpClient client;
+    final HttpClient client;
+    final String oauthClientId;
+    final String oauthClientSecret;
+    final String loginRedirectUrl;
 
     @Autowired
-    String oauthClientId;
-
-    @Autowired
-    String oauthClientSecret;
-
-    @Autowired
-    String loginRedirectUrl;
-
-    public String searchTracks(String q) {
-        HttpGet get = new HttpGet("https://api.spotify.com/v1/search?" +
-                URLEncodedUtils.format(Arrays.asList(
-                        new BasicNameValuePair("q", q),
-                        new BasicNameValuePair("type", "track")
-                ), Charsets.UTF_8));
-        return executeToString(get);
+    public SpotifyService(HttpClient client, String oauthClientId, String oauthClientSecret, String loginRedirectUrl) {
+        this.client = client;
+        this.oauthClientId = oauthClientId;
+        this.oauthClientSecret = oauthClientSecret;
+        this.loginRedirectUrl = loginRedirectUrl;
     }
 
     private String executeToString(HttpUriRequest request) {
