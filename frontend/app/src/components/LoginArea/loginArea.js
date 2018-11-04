@@ -1,5 +1,5 @@
 import React from 'react';
-import slothyxService from '../../services/slothyxservice';
+import slothyxService from '../../services/slothyxService';
 
 class LoginArea extends React.Component {
 

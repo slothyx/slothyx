@@ -7,7 +7,7 @@ import Image from '../../components/Image/image';
 import LoginArea from '../../components/LoginArea/loginArea';
 import LogoutButton from '../../components/LogoutButton/logoutButton';
 import Paragraph from '../../components/Paragraph/paragraph';
-import slothyxService from '../../services/slothyxservice'
+import slothyxService from '../../services/slothyxService'
 
 class Home extends React.Component {
     constructor(props) {
