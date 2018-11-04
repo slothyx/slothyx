@@ -22,22 +22,27 @@ class SlothyxService {
     }
 
     searchTracks(query, callback) {
-        this._sendGet(callback,
+        this._send(callback,
+            "GET",
             "/v1/search", {
                 q: query,
                 type: "track"
             });
     }
 
-    _sendGet(callback, path, queryParams) {
+    _send(callback, method, path, queryParams = {}, contentType = "text/plain;charset=UTF-8", body = null) {
         let xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                callback(xmlHttp.responseText);
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                if (callback !== null) {
+                    callback(JSON.parse(xmlHttp.responseText));
+                }
+            }
         };
-        xmlHttp.open("GET", this._createUrl(path, queryParams), true);
+        xmlHttp.open(method, this._createUrl(path, queryParams), true);
         xmlHttp.setRequestHeader("Authorization", "Bearer " + this.getAccessToken());
-        xmlHttp.send(null);
+        xmlHttp.setRequestHeader("Content-Type", contentType)
+        xmlHttp.send(body);
     }
 
     _createUrl(path, queryParams) {
@@ -51,12 +56,15 @@ class SlothyxService {
             }
             url = url.substr(0, url.length - 1);
         }
-        console.log("created url: " + url);
         return url;
     }
 
     getAccessToken() {
         return this._getUserData()["access_token"];
+    }
+
+    playSong(uri) {
+        this._send(null, "PUT", "/v1/me/player/play", {}, "application/json", '{"uris": ["' + uri + '"]}');
     }
 }
 

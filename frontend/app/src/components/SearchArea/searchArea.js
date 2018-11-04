@@ -1,5 +1,6 @@
 import React from 'react';
 import slothyxService from "../../services/slothyxService";
+import TrackList from "./trackList"
 
 class SearchArea extends React.Component {
 
@@ -16,7 +17,6 @@ class SearchArea extends React.Component {
 
     searchResultUpdate(searchResult) {
         this.setState({searchResult: searchResult});
-        console.log(searchResult);
     }
 
     handleChange(event) {
@@ -30,13 +30,16 @@ class SearchArea extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Search:
-                    <input type="text" value={this.state.value} onChange={this.handleChange}/>
-                </label>
-                <input type="submit" value="Submit"/>
-            </form>
+            <div>
+                <form onSubmit={this.handleSubmit}>
+                    <label>
+                        Search:
+                        <input type="text" value={this.state.value} onChange={this.handleChange}/>
+                    </label>
+                    <input type="submit" value="Submit"/>
+                </form>
+                <TrackList data={this.state.searchResult}/>
+            </div>
         );
     }
 }
