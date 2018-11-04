@@ -3,9 +3,9 @@ import React from 'react';
 import Container from '../../components/container';
 import Header from '../../components/header';
 import GlobalStyle from '../../components/global';
-import Image from '../../components/Image/image';
 import LoginArea from '../../components/LoginArea/loginArea';
 import LogoutButton from '../../components/LogoutButton/logoutButton';
+import SearchArea from '../../components/SearchArea/searchArea';
 import Paragraph from '../../components/Paragraph/paragraph';
 import slothyxService from '../../services/slothyxService'
 
@@ -32,26 +32,27 @@ class Home extends React.Component {
     }
 
     render() {
-        if(!this.state.loggedIn){
-            return <Container>
+        if (!this.state.loggedIn) {
+            return (<Container>
                 <Header>Slothyx</Header>
                 <Paragraph></Paragraph>
                 <LoginArea loggedIn={this.loggedIn}/>
-                <GlobalStyle />
+                <GlobalStyle/>
 
                 <div className="stars"></div>
                 <div className="twinkling"></div>
-            </Container>
-        }else{
-            return <Container>
+            </Container>);
+        } else {
+            return (<Container>
                 <Header>Slothyx</Header>
                 <span>You are logged in!</span>
                 <LogoutButton loggedOut={this.loggedOut}/>
-                <GlobalStyle />
+                <SearchArea/>
+                <GlobalStyle/>
 
                 <div className="stars"></div>
                 <div className="twinkling"></div>
-            </Container>
+            </Container>);
         }
     }
 }
