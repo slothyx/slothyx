@@ -5,17 +5,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -30,12 +24,10 @@ import java.util.Base64;
 @Service
 public class SpotifyService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpotifyService.class);
-
-    final HttpClient client;
-    final String oauthClientId;
-    final String oauthClientSecret;
-    final String loginRedirectUrl;
+    private final HttpClient client;
+    private final String oauthClientId;
+    private final String oauthClientSecret;
+    private final String loginRedirectUrl;
 
     @Autowired
     public SpotifyService(HttpClient client, String oauthClientId, String oauthClientSecret, String loginRedirectUrl) {
@@ -43,19 +35,6 @@ public class SpotifyService {
         this.oauthClientId = oauthClientId;
         this.oauthClientSecret = oauthClientSecret;
         this.loginRedirectUrl = loginRedirectUrl;
-    }
-
-    private String executeToString(HttpUriRequest request) {
-        request.setHeader("Authorization", "Bearer " + getSession().getAttribute("access_token"));
-        try {
-            return executeToStringAsIs(request);
-        } catch (RestException e) {
-            LOG.error("error in execute first try", e);
-            //TODO nicer catch for logout
-            refreshLogin();
-            request.setHeader("Authorization", "Bearer " + getSession().getAttribute("access_token"));
-            return executeToStringAsIs(request);
-        }
     }
 
     private String executeToStringAsIs(HttpUriRequest request) {
@@ -138,22 +117,4 @@ public class SpotifyService {
         return attr.getRequest().getSession();
     }
 
-    public String getAccessToken() {
-        //TODO no refresh right now
-        return String.valueOf(getSession().getAttribute("access_token"));
-    }
-
-    public void playSong(String uri, String deviceId) {
-        //TODO change deviceId handling
-        HttpPut put = new HttpPut("https://api.spotify.com/v1/me/player/play?" +
-                URLEncodedUtils.format(Arrays.asList(
-                        new BasicNameValuePair("device_id", deviceId)
-                ), Charsets.UTF_8));
-        JSONArray uris = new JSONArray();
-        uris.put(uri);
-        JSONObject body = new JSONObject();
-        body.put("uris", uris);
-        put.setEntity(new StringEntity(body.toString(), ContentType.APPLICATION_JSON));
-        executeToString(put);
-    }
 }

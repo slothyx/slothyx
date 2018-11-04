@@ -36,18 +36,4 @@ public class SpotifyController {
         mav.addObject("oauthResponse", oauthResponse);
         return mav;
     }
-
-    @GetMapping("/getAccessToken")
-    String getAccessToken() {
-        return spotifyService.getAccessToken();
-    }
-
-    //TODO post/put
-    @GetMapping("/playSong")
-    void playSong(
-            @RequestParam("uri") String uri,
-            @RequestParam("deviceid") String deviceId
-    ) {
-        spotifyService.playSong(uri, deviceId);
-    }
 }

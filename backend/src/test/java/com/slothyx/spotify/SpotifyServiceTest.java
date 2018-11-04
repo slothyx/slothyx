@@ -40,8 +40,6 @@ public class SpotifyServiceTest {
     private static final String ACCESS_TOKEN = "accessCode";
     private static final String REFRESH_TOKEN = "refreshCode";
     private static final String REFRESHED_ACCESS_TOKEN = "refreshedAccessCode";
-    private static final String SPOTIFY_SONG_URI = "spotify:song:uri";
-    private static final String DEVICE_ID = "deviceId";
     private static final String OAUTH_RESPONSE = "{\"access_token\":\"" + ACCESS_TOKEN + "\",\"refresh_token\":\"" + REFRESH_TOKEN + "\"}";
 
     @Mock
@@ -117,38 +115,6 @@ public class SpotifyServiceTest {
         when(httpClient.execute(argThat(createRefreshMatcher()))).thenReturn(createNotAuthResponse());
 
         service.refreshLogin();
-    }
-
-    @Test
-    void playSong() throws IOException {
-        when(session.getAttribute("access_token")).thenReturn(ACCESS_TOKEN);
-        when(httpClient.execute(argThat(createPlaySongMatcher()))).thenReturn(createEmptySuccessResponse());
-
-        service.playSong(SPOTIFY_SONG_URI, DEVICE_ID);
-
-        verify(httpClient).execute(argThat(createPlaySongMatcher()));
-    }
-
-    private ArgumentMatcher<HttpUriRequest> createPlaySongMatcher() {
-        return request -> {
-            new HttpUriRequestMatcher(request)
-                    .method("PUT")
-                    .scheme("https")
-                    .host("api.spotify.com")
-                    .path("/v1/me/player/play")
-                    .queryContains("device_id=" + DEVICE_ID)
-                    .bodyContains("\"uris\":[\"" + SPOTIFY_SONG_URI + "\"]")
-                    .containsHeader("Authorization", getUserAuthheaderValue());
-            return true;
-        };
-    }
-
-    private String getUserAuthheaderValue() {
-        return "Bearer " + ACCESS_TOKEN;
-    }
-
-    private HttpResponse createEmptySuccessResponse() {
-        return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, 200, "OK"));
     }
 
     private HttpResponse createSuccessRefreshResponse() {
