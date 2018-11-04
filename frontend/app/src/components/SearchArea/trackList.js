@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import slothyxService from "../../services/slothyxService";
 
 class TrackList extends React.Component {
@@ -18,9 +19,9 @@ class TrackList extends React.Component {
             list = [];
         }
         return (
-            <ul>
+            <StyledUl>
                 {list}
-            </ul>
+            </StyledUl>
         );
     }
 }
@@ -41,11 +42,22 @@ class TrackListItem extends React.Component {
         let artistName = this.props.track["artists"][0].name;
         let songName = this.props.track.name;
         return (
-            <li onClick={this.clickedSong}>
+            <StyledLi onClick={this.clickedSong}>
                 {artistName}: {songName}
-            </li>
+            </StyledLi>
         );
     }
 }
+
+
+const StyledUl = styled.ul`
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+`;
+
+const StyledLi = styled.li`
+    cursor: pointer;
+`;
 
 export default TrackList;
