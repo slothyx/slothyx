@@ -58,7 +58,7 @@ public class SpotifyService {
         request.setHeader("Authorization", "Bearer " + getSession().getAttribute("access_token"));
         try {
             return executeToStringAsIs(request);
-        } catch (Exception e) {
+        } catch (RestException e) {
             LOG.error("error in execute first try", e);
             //TODO nicer catch for logout
             refreshLogin();
@@ -70,6 +70,9 @@ public class SpotifyService {
     private String executeToStringAsIs(HttpUriRequest request) {
         try {
             HttpResponse response = client.execute(request);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RestException("request " + request.getURI().toString() + " did return not ok code: " + response.getStatusLine().getStatusCode());
+            }
             if (response.getEntity() == null) {
                 return null;
             }
@@ -108,7 +111,7 @@ public class SpotifyService {
         String responseString = executeToStringAsIs(post);
         //TODO better valdiation of return code and things
         if (responseString == null) {
-            throw new AuthErrorExcpetion("could not validate oauth token");
+            throw new RestException("could not validate oauth token");
         }
         JSONObject response = new JSONObject(responseString);
         HttpSession session = getSession();
@@ -132,7 +135,7 @@ public class SpotifyService {
         String responseString = executeToStringAsIs(post);
         //TODO better valdiation of return code and things
         if (responseString == null) {
-            throw new AuthErrorExcpetion("could not validate oauth token");
+            throw new RestException("could not validate oauth token");
         }
         JSONObject response = new JSONObject(responseString);
         HttpSession session = getSession();
@@ -150,6 +153,7 @@ public class SpotifyService {
     }
 
     public void playSong(String uri, String deviceId) {
+        //TODO change deviceId handling
         HttpPut put = new HttpPut("https://api.spotify.com/v1/me/player/play?" +
                 URLEncodedUtils.format(Arrays.asList(
                         new BasicNameValuePair("device_id", deviceId)
