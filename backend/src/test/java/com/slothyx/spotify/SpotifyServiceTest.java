@@ -1,6 +1,5 @@
 package com.slothyx.spotify;
 
-
 import com.slothyx.spotify.util.HttpUriRequestMatcher;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
@@ -30,13 +29,12 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
-
 @Test
 public class SpotifyServiceTest {
 
     private static final String OAUTH_CLIENT_ID = "clientId";
     private static final String OAUTH_CLIENT_SECRET = "clientSecret";
-    private static final String LOGIN_REDIRECT_URL = "http://locahost:8080/login";
+    private static final String LOGIN_REDIRECT_URL = "http://locahost:8080/api/login";
     private static final String CODE = "oauthCode";
     private static final String ACCESS_TOKEN = "accessCode";
     private static final String REFRESH_TOKEN = "refreshCode";
@@ -45,6 +43,7 @@ public class SpotifyServiceTest {
     private static final String DEVICE_ID = "deviceId";
     private static final String SEARCH_REQUEST = "coolSongSearch";
     private static final String SEARCH_REQUEST_RESPONSE = "cool Song response!";
+    private static final String OAUTH_RESPONSE = "{\"access_token\":\"" + ACCESS_TOKEN + "\",\"refresh_token\":\"" + REFRESH_TOKEN + "\"}";
 
     @Mock
     HttpClient httpClient;
@@ -93,14 +92,18 @@ public class SpotifyServiceTest {
         service.loginCurrentUser(CODE);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    void testLoginFlowWithNullCode() {
+        service.loginCurrentUser(null);
+    }
+
     @Test
     void testLoginFlowWithCodeTokenSuccess() throws IOException {
         when(httpClient.execute(argThat(createAuthMatcher()))).thenReturn(createSuccessAuthResponse());
 
-        service.loginCurrentUser(CODE);
+        String oauthResponse = service.loginCurrentUser(CODE);
 
-        verify(session).setAttribute("access_token", ACCESS_TOKEN);
-        verify(session).setAttribute("refresh_token", REFRESH_TOKEN);
+        assertEquals(oauthResponse, OAUTH_RESPONSE);
     }
 
     @Test
@@ -266,7 +269,7 @@ public class SpotifyServiceTest {
                     .path("/api/token")
                     .bodyContains("grant_type=authorization_code")
                     .bodyContains("code=" + CODE)
-                    .bodyContains("redirect_uri=http%3A%2F%2Flocahost%3A8080%2Flogin")
+                    .bodyContains("redirect_uri=http%3A%2F%2Flocahost%3A8080%2Fapi%2Flogin")
                     .containsHeader("Authorization", getClientIdAuthHeaderValue());
             return true;
         };
@@ -279,7 +282,7 @@ public class SpotifyServiceTest {
     private HttpResponse createSuccessAuthResponse() {
         BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, 200, "OK"));
         response.setEntity(EntityBuilder.create()
-                .setText("{\"access_token\":\"" + ACCESS_TOKEN + "\",\"refresh_token\":\"" + REFRESH_TOKEN + "\"}")
+                .setText(OAUTH_RESPONSE)
                 .build());
         return response;
     }

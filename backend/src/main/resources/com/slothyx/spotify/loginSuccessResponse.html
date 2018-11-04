@@ -1,0 +1,9 @@
+<html>
+<body>
+<input type="hidden" value="$oauthResponse" id="oauthResponse"/>
+<script type="application/javascript">
+    window.localStorage.setItem("slothyx.userdata", document.getElementById("oauthResponse").value);
+    window.close();
+</script>
+</body>
+</html>

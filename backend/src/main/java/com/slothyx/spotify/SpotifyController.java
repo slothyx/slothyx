@@ -2,11 +2,15 @@ package com.slothyx.spotify;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+//TODO CSRF
 @RestController
+@RequestMapping("/api")
 public class SpotifyController {
 
     @Autowired
@@ -18,7 +22,7 @@ public class SpotifyController {
     }
 
     @GetMapping("/login")
-    RedirectView login(
+    ModelAndView login(
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "error", required = false) String error
     ) {
@@ -26,8 +30,11 @@ public class SpotifyController {
             throw new RuntimeException("failure logging in: " + error);
         }
         //TODO exception handling
-        spotifyService.loginCurrentUser(code);
-        return new RedirectView("/test.html");
+        String oauthResponse = spotifyService.loginCurrentUser(code);
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("loginSuccess");
+        mav.addObject("oauthResponse", oauthResponse);
+        return mav;
     }
 
     @GetMapping(value = "/search", produces = "application/json")

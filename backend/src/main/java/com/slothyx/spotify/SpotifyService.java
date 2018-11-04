@@ -94,7 +94,10 @@ public class SpotifyService {
                 ), Charsets.UTF_8);
     }
 
-    public void loginCurrentUser(String code) {
+    public String loginCurrentUser(String code) {
+        if (code == null) {
+            throw new IllegalArgumentException("code is not allowed to be null");
+        }
         HttpPost post = new HttpPost("https://accounts.spotify.com/api/token");
         post.addHeader("Authorization",
                 "Basic " + Base64.getEncoder().encodeToString((oauthClientId + ":" + oauthClientSecret).getBytes(Charsets.UTF_8)));
@@ -113,10 +116,7 @@ public class SpotifyService {
         if (responseString == null) {
             throw new RestException("could not validate oauth token");
         }
-        JSONObject response = new JSONObject(responseString);
-        HttpSession session = getSession();
-        session.setAttribute("access_token", response.getString("access_token"));
-        session.setAttribute("refresh_token", response.getString("refresh_token"));
+        return responseString;
     }
 
     void refreshLogin() {
