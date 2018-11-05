@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Container from '../../components/container';
-import GlobalStyle from '../../components/global';
+import Container from '../../components/Welcome/container';
+import GlobalStyle from '../../components/global.styles';
 import slothyxService from '../../services/slothyxService'
-import LoginComponent from './loginComponent'
-import MainComponent from './mainComponent'
+import LoginComponent from '../../components/LoginArea/loginComponent'
+import MainComponent from '../../components/Welcome/mainComponent'
 
 class Home extends React.Component {
     constructor(props) {
@@ -30,16 +30,16 @@ class Home extends React.Component {
 
     render() {
         let content = this.state.loggedIn ?
-            (<MainComponent loggedOut={this.loggedOut}/>) :
-            (<LoginComponent loggedIn={this.loggedIn}/>);
+            (<MainComponent loggedOut={this.loggedOut} />) :
+            (<LoginComponent loggedIn={this.loggedIn} />);
 
         return (
             <Container>
                 {content}
-                <GlobalStyle/>
+                <GlobalStyle />
 
-                <div className="stars"/>
-                <div className="twinkling"/>
+                <div className="stars" />
+                <div className="twinkling" />
             </Container>);
     }
 }

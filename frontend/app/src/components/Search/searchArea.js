@@ -16,11 +16,11 @@ class SearchArea extends React.Component {
     }
 
     searchResultUpdate(searchResult) {
-        this.setState({searchResult: searchResult});
+        this.setState({ searchResult: searchResult });
     }
 
     handleChange(event) {
-        this.setState({searchString: event.target.value});
+        this.setState({ searchString: event.target.value });
     }
 
     handleSubmit(event) {
@@ -34,11 +34,11 @@ class SearchArea extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         Search:
-                        <input type="text" value={this.state.value} onChange={this.handleChange}/>
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
                     </label>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value="Submit" />
                 </form>
-                <TrackList data={this.state.searchResult}/>
+                <TrackList data={this.state.searchResult} />
             </div>
         );
     }
