@@ -30,21 +30,6 @@ class SlothyxService {
             });
     }
 
-    _send(callback, method, path, queryParams = {}, contentType = "text/plain;charset=UTF-8", body = null) {
-        let xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                if (callback !== null) {
-                    callback(JSON.parse(xmlHttp.responseText));
-                }
-            }
-        };
-        xmlHttp.open(method, this._createUrl(path, queryParams), true);
-        xmlHttp.setRequestHeader("Authorization", "Bearer " + this.getAccessToken());
-        xmlHttp.setRequestHeader("Content-Type", contentType)
-        xmlHttp.send(body);
-    }
-
     _createUrl(path, queryParams) {
         let url = spotifyApiBaseUrl + path;
         if (queryParams) {
@@ -60,11 +45,31 @@ class SlothyxService {
     }
 
     getAccessToken() {
+        //TODO refresh
         return this._getUserData()["access_token"];
     }
 
     playSong(uri) {
         this._send(null, "PUT", "/v1/me/player/play", {}, "application/json", '{"uris": ["' + uri + '"]}');
+    }
+
+    switchToDevice(device_id) {
+        this._send(null, "PUT", "/v1/me/player", {}, "application/json", '{"device_ids":["'+device_id+'"]}');
+    }
+
+    _send(callback, method, path, queryParams = {}, contentType = "text/plain;charset=UTF-8", body = null) {
+        let xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                if (callback !== null) {
+                    callback(JSON.parse(xmlHttp.responseText));
+                }
+            }
+        };
+        xmlHttp.open(method, this._createUrl(path, queryParams), true);
+        xmlHttp.setRequestHeader("Authorization", "Bearer " + this.getAccessToken());
+        xmlHttp.setRequestHeader("Content-Type", contentType);
+        xmlHttp.send(body);
     }
 }
 
