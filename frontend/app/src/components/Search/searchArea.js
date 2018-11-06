@@ -25,7 +25,7 @@ class SearchArea extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        slothyxService.searchTracks(this.state.searchString, this.searchResultUpdate);
+        slothyxService.searchTracks(this.searchResultUpdate, this.state.searchString);
     }
 
     render() {

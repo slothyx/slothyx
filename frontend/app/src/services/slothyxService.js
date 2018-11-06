@@ -21,15 +21,6 @@ class SlothyxService {
         window.localStorage.removeItem(userDataKey);
     }
 
-    searchTracks(query, callback) {
-        this._send(callback,
-            "GET",
-            "/v1/search", {
-                q: query,
-                type: "track"
-            });
-    }
-
     _createUrl(path, queryParams) {
         let url = spotifyApiBaseUrl + path;
         if (queryParams) {
@@ -50,14 +41,30 @@ class SlothyxService {
     }
 
     playSong(uri) {
-        this._send(null, "PUT", "/v1/me/player/play", {}, "application/json", '{"uris": ["' + uri + '"]}');
+        this._put(null, "/v1/me/player/play", '{"uris": ["' + uri + '"]}');
     }
 
     switchToDevice(device_id) {
-        this._send(null, "PUT", "/v1/me/player", {}, "application/json", '{"device_ids":["'+device_id+'"]}');
+        this._put(null, "/v1/me/player", '{"device_ids":["' + device_id + '"]}');
     }
 
-    _send(callback, method, path, queryParams = {}, contentType = "text/plain;charset=UTF-8", body = null) {
+    searchTracks(callback, query) {
+        this._get(callback,
+            "/v1/search", {
+                q: query,
+                type: "track"
+            });
+    }
+
+    _get(callback, path, queryParams) {
+        this._send(callback, "GET", path, queryParams);
+    }
+
+    _put(callback, path, body) {
+        this._send(callback, "PUT", path, {}, "application/json", body);
+    }
+
+    _send(callback, method, path, queryParams = {}, contentType = null, body = null) {
         let xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
@@ -68,7 +75,9 @@ class SlothyxService {
         };
         xmlHttp.open(method, this._createUrl(path, queryParams), true);
         xmlHttp.setRequestHeader("Authorization", "Bearer " + this.getAccessToken());
-        xmlHttp.setRequestHeader("Content-Type", contentType);
+        if (contentType !== null) {
+            xmlHttp.setRequestHeader("Content-Type", contentType);
+        }
         xmlHttp.send(body);
     }
 }
