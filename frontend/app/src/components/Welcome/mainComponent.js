@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header/header';
 import LogoutButton from "../LogoutButton/logoutButton";
-import SearchArea from "../Search/SearchArea";
+import SearchArea from "../Search/searchArea";
 import Player from "../Player/player";
 
 class MainComponent extends React.Component {
