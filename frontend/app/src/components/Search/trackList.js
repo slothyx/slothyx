@@ -17,9 +17,7 @@ class TrackList extends React.Component {
         if (data && data["tracks"] && data["tracks"]["items"]) {
 
             list = data["tracks"]["items"].map((track) => (
-                <div>
-                    <TrackListItem key={track.id} track={track} />
-                </div>
+                <TrackListItem key={track.id} track={track} />
             ));
         } else {
             list = [];
