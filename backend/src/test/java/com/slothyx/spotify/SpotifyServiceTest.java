@@ -75,7 +75,7 @@ public class SpotifyServiceTest {
                 .queryContains("response_type=code")
                 .queryContains("redirect_uri=" + LOGIN_REDIRECT_URL)
                 .queryContains("client_id=" + OAUTH_CLIENT_ID)
-                .queryContains("scope=streaming+user-modify-playback-state+user-read-birthdate+user-read-email+user-read-private");
+                .queryContains("scope=" + SpotifyService.SCOPE.replaceAll(" ", "+"));
     }
 
     @Test(expectedExceptions = RestException.class)

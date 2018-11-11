@@ -56,7 +56,17 @@ class SlothyxService {
             });
     }
 
-    _get(callback, path, queryParams) {
+    getPlaylist(callback, playlist_id) {
+        this._get(callback,
+            "/v1/playlists/" + playlist_id);
+    }
+
+    getUsersPlaylists(callback) {
+        this._get(callback,
+            "/v1/me/playlists");
+    }
+
+    _get(callback, path, queryParams = {}) {
         this._send(callback, "GET", path, queryParams);
     }
 

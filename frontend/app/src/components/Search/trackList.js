@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import slothyxService from "../../services/slothyxService";
-import { MdPlayCircleOutline } from "react-icons/md";
+import {MdPlayCircleOutline} from "react-icons/md";
 
 class TrackList extends React.Component {
 
@@ -14,10 +14,9 @@ class TrackList extends React.Component {
         let list;
         console.log(data);
 
-        if (data && data["tracks"] && data["tracks"]["items"]) {
-
+        if (data && !!data["tracks"] && !!data["tracks"]["items"]) {
             list = data["tracks"]["items"].map((track) => (
-                <TrackListItem key={track.id} track={track} />
+                <TrackListItem key={track.id} track={track}/>
             ));
         } else {
             list = [];
@@ -49,7 +48,7 @@ class TrackListItem extends React.Component {
 
         return (
             <StyledLi onClick={this.clickedSong}>
-                <ImagePreview src={imageUrl} />
+                <ImagePreview src={imageUrl}/>
                 <StyledSongDescription>
                     <StyledSongTitle>{songName}</StyledSongTitle>
                     <StyledSongArtist>{artistName}</StyledSongArtist>
