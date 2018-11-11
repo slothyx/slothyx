@@ -1,8 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 
 // Background inspired by https://codepen.io/WebSonick/pen/vjmgu
-import StarsTwinkle from '../images/stars_twinkle.png';
-import StarsBackground from '../images/stars_background.png';
+import StarsTwinkle from '../../images/stars_twinkle.png';
+import StarsBackground from '../../images/stars_background.png';
 
 // Global Style
 const GlobalStyle = createGlobalStyle`

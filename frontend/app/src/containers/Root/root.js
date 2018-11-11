@@ -1,12 +1,24 @@
 import React from 'react';
 
-import Container from '../../components/Welcome/container';
-import GlobalStyle from '../../components/global.styles';
+import GlobalStyle from './global.styles';
 import slothyxService from '../../services/slothyxService'
-import LoginComponent from '../../components/LoginArea/loginComponent'
-import MainComponent from '../../components/Welcome/mainComponent'
+import LoginContainer from '../Login/loginContainer'
+import MainContainer from '../Main/mainContainer'
+import styled from "styled-components";
 
-class Home extends React.Component {
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto 30px;
+    max-width: 50em;
+    padding-left: 15px;
+    padding-right: 15px;
+    align-items: center;
+    justify-content: center
+`;
+
+class Root extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,8 +42,8 @@ class Home extends React.Component {
 
     render() {
         let content = this.state.loggedIn ?
-            (<MainComponent loggedOut={this.loggedOut} />) :
-            (<LoginComponent loggedIn={this.loggedIn} />);
+            (<MainContainer loggedOut={this.loggedOut} />) :
+            (<LoginContainer loggedIn={this.loggedIn} />);
 
         return (
             <Container>
@@ -44,4 +56,4 @@ class Home extends React.Component {
     }
 }
 
-export default Home;
+export default Root;

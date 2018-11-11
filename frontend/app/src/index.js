@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // Import Components
-import Home from './containers/Home/Home';
+import Root from './containers/Root/root';
 
 // Render page
 ReactDOM.render(
-  <Home />,
+  <Root />,
   document.getElementById('root')
 );
 

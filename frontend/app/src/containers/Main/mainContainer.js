@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from '../Header/header';
-import LogoutButton from "../LogoutButton/logoutButton";
-import SearchArea from "../Search/searchArea";
-import Player from "../Player/player";
+import Header from '../../components/Header/header';
+import LogoutButton from "../../components/LogoutButton/logoutButton";
+import SearchArea from "../../components/Search/searchArea";
+import Player from "../../components/Player/player";
 
-class MainComponent extends React.Component {
+class MainContainer extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -20,4 +20,4 @@ class MainComponent extends React.Component {
     }
 }
 
-export default MainComponent;
+export default MainContainer;
